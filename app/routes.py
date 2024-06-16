@@ -48,10 +48,13 @@ def logout():
 def account():
     form = UpdateAccountForm()
     if form.validate_on_submit():
-        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        current_user.username = form.username.data
-        current_user.email = form.email.data
-        current_user.password = hashed_password
+        if form.username.data != current_user.username:
+            current_user.username = form.username.data
+        if form.email.data != current_user.email:
+            current_user.email = form.email.data
+        if form.password.data:
+            hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+            current_user.password = hashed_password
         db.session.commit()
         flash('Ваш аккаунт был обновлен!', 'success')
         return redirect(url_for('account'))
