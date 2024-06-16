@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+{% block title %}Главная{% endblock %}
+{% block content %}
+    <h2>Добро пожаловать на сайт!</h2>
+    <p>Это главная страница вашего веб-приложения.</p>
+    {% if current_user.is_authenticated %}
+        <p><a href="{{ url_for('account') }}">Редактировать профиль</a></p>
+    {% endif %}
+{% endblock %}
