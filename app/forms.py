@@ -28,16 +28,18 @@ class LoginForm(FlaskForm):
 class UpdateAccountForm(FlaskForm):
     username = StringField('Имя пользователя', validators=[DataRequired(), Length(min=2, max=20)])
     email = StringField('Электронная почта', validators=[DataRequired(), Email()])
-    password = PasswordField('Новый пароль', validators=[DataRequired()])
-    confirm_password = PasswordField('Подтвердите новый пароль', validators=[DataRequired(), EqualTo('password')])
+    password = PasswordField('Новый пароль')
+    confirm_password = PasswordField('Подтвердите новый пароль', validators=[EqualTo('password')])
     submit = SubmitField('Обновить')
 
     def validate_username(self, username):
-        user = User.query.filter_by(username=username.data).first()
-        if user:
-            raise ValidationError('Это имя пользователя уже занято. Пожалуйста, выберите другое.')
+        if username.data != current_user.username:
+            user = User.query.filter_by(username=username.data).first()
+            if user:
+                raise ValidationError('Это имя пользователя уже занято. Пожалуйста, выберите другое.')
 
     def validate_email(self, email):
-        user = User.query.filter_by(email=email.data).first()
-        if user:
-            raise ValidationError('Этот адрес электронной почты уже используется. Пожалуйста, выберите другой.')
+        if email.data != current_user.email:
+            user = User.query.filter_by(email=email.data).first()
+            if user:
+                raise ValidationError('Этот адрес электронной почты уже используется. Пожалуйста, выберите другой.')
